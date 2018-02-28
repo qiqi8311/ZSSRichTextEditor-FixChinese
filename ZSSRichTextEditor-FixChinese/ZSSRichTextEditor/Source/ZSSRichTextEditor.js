@@ -32,7 +32,8 @@ zss_editor.contentHeight = 244;
 
 // Sets to true when extra footer gap shows and requires to hide
 zss_editor.updateScrollOffset = false;
-
+//是否光标定位在最后
+zss_editor.isSelectlast = false;
 /**
  * The initializer function that must be called onLoad
  */
@@ -523,6 +524,10 @@ zss_editor.insertImageBase64String = function(imageBase64String, alt) {
 zss_editor.setHTML = function(html) {
     var editor = $('#zss_editor_content');
     
+    if(html==""){
+        return;
+    }
+    zss_editor.isSelectlast = true;
     html = zss_editor.escape2Html(html+'&zwnj;');
     editor.html(html);
 }
@@ -721,12 +726,15 @@ zss_editor.focusEditor = function() {
     // the following was taken from http://stackoverflow.com/questions/1125292/how-to-move-cursor-to-end-of-contenteditable-entity/3866442#3866442
     // and ensures we move the cursor to the end of the editor
     var editor = $('#zss_editor_content');
-    var range = document.createRange();
-    range.selectNodeContents(editor.get(0));
-    range.collapse(false);
-    var selection = window.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
+    if(zss_editor.isSelectlast){
+        var range = document.createRange();
+        range.selectNodeContents(editor.get(0));
+        range.collapse(false);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        zss_editor.isSelectlast = false;
+    }
     editor.focus();
 }
 
